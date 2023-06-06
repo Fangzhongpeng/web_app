@@ -12,14 +12,14 @@ log:
 
 mysql:
  host: "60.191.116.77"
- prot: 3306
- user: root
+ port: 3306
+ user: "root"
  password: "qwert"
- dbname: "sql_demo"
+ dbname: "sql_test"
  max_open_conns : 200
  max_idle_conns : 50
 redis:
-  host: "127.0.0.1"
+  host: "192.168.4.80"
   password: "qwerty"
   port: 6379
   db: 0
