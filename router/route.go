@@ -1,4 +1,4 @@
-package routes
+package router
 
 import (
 	"net/http"
@@ -8,11 +8,15 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func Setup(mode string) *gin.Engine {
+func SetupRouter(mode string) *gin.Engine {
+	if mode == gin.ReleaseMode {
+		gin.SetMode(gin.ReleaseMode)
+	}
 	r := gin.New()
 	r.Use(logger.GinLogger(), logger.GinRecovery(true))
 	//注册路由
 	r.POST("/signup", controller.SignUpHandler)
+	r.POST("/login", controller.LoginHandler)
 	r.GET("/ping", func(c *gin.Context) {
 		c.String(http.StatusOK, "pong")
 	})
