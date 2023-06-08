@@ -13,6 +13,12 @@ import (
 // 待logic层更具业务需要调用
 // 不关注业务逻辑
 
+var (
+	ErrorUserExist       = errors.New("用户已存在")
+	ErrorUserNotExist    = errors.New("用户不存在")
+	ErrorInvalidPassword = errors.New("用户密码错误")
+)
+
 // CheckUserExist 检查指定用户名的用户是否存在
 func CheckUserExist(username string) (err error) {
 	sqlStr := `select count(user_id) from user where username = ?`
@@ -21,7 +27,7 @@ func CheckUserExist(username string) (err error) {
 		return err
 	}
 	if count > 0 {
-		return errors.New("用户已存在")
+		return ErrorUserExist
 	}
 	return
 }
@@ -42,7 +48,7 @@ func Login(user *models.User) (err error) {
 	sqlStr := `select user_id, username, password from user where username=?`
 	err = db.Get(&oUser, sqlStr, user.Username)
 	if err == sql.ErrNoRows {
-		return err
+		return ErrorUserNotExist
 	}
 	if err != nil {
 		// 查询数据库失败
@@ -54,7 +60,7 @@ func Login(user *models.User) (err error) {
 	//err = ComparePasswd("test1111", "test")
 	if err != nil {
 		fmt.Println("错误")
-		return errors.New("密码错误")
+		return ErrorInvalidPassword
 	}
 	//password := encryptPassword(oPassword)
 	//if password != user.Password {
