@@ -2,3 +2,4 @@
 加载模块：go mod tidy
 折叠函数： command + shift + -
 快捷复制行：command + d
+jwt是基于token的认证模式，与cookies sessions模式最大的区别就是不用再服务端存储认证数据

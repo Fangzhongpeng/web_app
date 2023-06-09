@@ -81,7 +81,7 @@ func LoginHandler(c *gin.Context) {
 		return
 	}
 	// 2 业务逻辑处理
-	err := logic.Login(p)
+	token, err := logic.Login(p)
 	if err != nil {
 		//c.JSON(http.StatusOK, gin.H{
 		//	"msg": "用户名或密码错误",
@@ -94,9 +94,10 @@ func LoginHandler(c *gin.Context) {
 		ResponseError(c, CodeInvalidPassword)
 		return
 	}
+
 	// 3 返回响应
 	//c.JSON(http.StatusOK, gin.H{
 	//	"msg": "登录成功",
 	//})
-	ResponseSuccess(c, nil)
+	ResponseSuccess(c, token)
 }
