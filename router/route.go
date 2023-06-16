@@ -14,10 +14,17 @@ func SetupRouter(mode string) *gin.Engine {
 		gin.SetMode(gin.ReleaseMode)
 	}
 	r := gin.New()
+	// 启用全局跨域中间件
+	r.Use(middleware.CORSMiddleware())
 	r.Use(logger.GinLogger(), logger.GinRecovery(true))
 	//注册路由
 	r.POST("/signup", controller.SignUpHandler)
 	r.POST("/login", controller.LoginHandler)
+
+	//r.Use(middleware.JWTAuthMiddleware())
+	//{
+	//	r.GET("/userinfo", controller.GetUserInfoHandler)
+	//}
 	r.GET("/ping", middleware.JWTAuthMiddleware(), func(c *gin.Context) {
 		//如果是登录的用户,判断请求头中是否有有效的jwt token
 		c.String(http.StatusOK, "pong")

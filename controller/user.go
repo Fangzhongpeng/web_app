@@ -7,11 +7,10 @@ import (
 	"web_app/logic"
 	"web_app/models"
 
-	"github.com/go-playground/validator/v10"
-
 	"go.uber.org/zap"
 
 	"github.com/gin-gonic/gin"
+	"github.com/go-playground/validator/v10"
 )
 
 // 处理注册请求的函数
@@ -94,10 +93,21 @@ func LoginHandler(c *gin.Context) {
 		ResponseError(c, CodeInvalidPassword)
 		return
 	}
-
 	// 3 返回响应
 	//c.JSON(http.StatusOK, gin.H{
 	//	"msg": "登录成功",
 	//})
 	ResponseSuccess(c, token)
+}
+func GetUserInfoHandler(c *gin.Context) {
+	userID, err := getCurrentUserID(c)
+	//fmt.Printf("获取的用户id是啊:%v", userID)
+
+	if err != nil {
+		//ResponseError(c, CodeNeedLogin)
+		zap.L().Error("logic.Login failed", zap.String("username", "p.Username"), zap.Error(err))
+		return
+	}
+	data, err := logic.GetUserById(userID)
+	ResponseSuccess(c, data)
 }
