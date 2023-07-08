@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"fmt"
 	"strings"
 	"web_app/controller"
 	"web_app/pkg/jwt"
@@ -55,4 +56,29 @@ func JWTAuthMiddleware() func(c *gin.Context) {
 		//um, _ := c.Get(controller.CtxUserUsername)
 		//fmt.Printf("认证用户名%v\n", um)
 	}
+}
+func JWTParamAuthMiddleware() func(c *gin.Context) {
+	return func(c *gin.Context) {
+		//从url中获取token
+		//token := c.Query("token")
+		//从header中获取参数
+		//token := c.GetHeader("X-Token")
+		token := c.Request.Header.Get("X-Token")
+		fmt.Printf("获取的token:%s", token)
+		mc, err := jwt.ParseToken(token)
+		if err != nil {
+			controller.ResponseError(c, controller.CodeInvalidToken)
+			//c.JSON(http.StatusOK, gin.H{
+			//	"code": 2005,
+			//	"msg":  "无效的Token",
+			//})
+			c.Abort()
+			return
+		}
+		c.Set(controller.CtxUserIDKey, mc.UserID)
+		c.Set(controller.CtxUserUsername, mc.Username)
+
+		c.Next() // 后续的处理函数可以用过c.Get(CtxUserIDKey)来获取当前请求的用户信息
+	}
+
 }

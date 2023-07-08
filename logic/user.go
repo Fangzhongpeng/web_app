@@ -33,19 +33,26 @@ func SignUp(p *models.ParamSignUp) (err error) {
 	return mysql.InsertUser(user)
 }
 
-func Login(p *models.ParamLogin) (token string, err error) {
+func Login(p *models.ParamLogin) (user *models.User, err error) {
 
-	user := &models.User{
+	user = &models.User{
 		Username: p.Username,
 		Password: p.Password,
 	}
 	// 传递的是指针，就能拿到user.UserID
 	if err := mysql.Login(user); err != nil {
-		return "", err
+		return nil, err
 	}
 	//fmt.Printf("用户id是：%v", user.UserID)
 	//生成jwt token
-	return jwt.GenToken(user.UserID, user.Username)
+	// 生成JWT
+	token, err := jwt.GenToken(user.UserID, user.Username)
+	if err != nil {
+		return
+	}
+	user.Token = token
+	return
+	//return jwt.GenToken(user.UserID, user.Username)
 }
 func GetUserById(uid int64) (data *models.User, err error) {
 	// 查询并组合我们接口想用的数据

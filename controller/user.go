@@ -80,7 +80,8 @@ func LoginHandler(c *gin.Context) {
 		return
 	}
 	// 2 业务逻辑处理
-	token, err := logic.Login(p)
+	user, err := logic.Login(p)
+
 	if err != nil {
 		//c.JSON(http.StatusOK, gin.H{
 		//	"msg": "用户名或密码错误",
@@ -93,11 +94,15 @@ func LoginHandler(c *gin.Context) {
 		ResponseError(c, CodeInvalidPassword)
 		return
 	}
-	// 3 返回响应
+	//3 返回响应
 	//c.JSON(http.StatusOK, gin.H{
 	//	"msg": "登录成功",
 	//})
-	ResponseSuccess(c, token)
+	ResponseSuccess(c, gin.H{
+		"user_id":   fmt.Sprintf("%d", user.UserID), // id值大于1<<53-1  int64类型的最大值是1<<63-1
+		"user_name": user.Username,
+		"token":     user.Token,
+	})
 }
 func GetUserInfoHandler(c *gin.Context) {
 	userID, err := getCurrentUserID(c)

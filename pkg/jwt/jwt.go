@@ -20,7 +20,7 @@ type CustomClaims struct {
 //	jwt.StandardClaims
 //}
 
-const TokenExpireDuration = time.Hour * 2
+const TokenExpireDuration = time.Hour * 24 * 365
 
 var CustomSecret = []byte("G小调交响曲")
 
